@@ -16,7 +16,7 @@ import static org.springframework.http.HttpStatus.ACCEPTED;
 
 @RestController
 @RequestMapping("/api")
-@CrossOrigin
+//@CrossOrigin
 public class ProductController {
 
     @Autowired

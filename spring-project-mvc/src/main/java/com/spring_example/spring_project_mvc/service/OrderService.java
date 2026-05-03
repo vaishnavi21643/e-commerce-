@@ -181,15 +181,19 @@ package com.spring_example.spring_project_mvc.service;
 import com.spring_example.spring_project_mvc.model.Order;
 import com.spring_example.spring_project_mvc.model.OrderItem;
 import com.spring_example.spring_project_mvc.model.Product;
+import com.spring_example.spring_project_mvc.model.User;
 import com.spring_example.spring_project_mvc.model.dto.OrderItemRequest;
 import com.spring_example.spring_project_mvc.model.dto.OrderItemResponse;
 import com.spring_example.spring_project_mvc.model.dto.OrderRequest;
 import com.spring_example.spring_project_mvc.model.dto.OrderResponse;
 import com.spring_example.spring_project_mvc.repo.OrderRepo;
 import com.spring_example.spring_project_mvc.repo.ProductRepo;
+import com.spring_example.spring_project_mvc.repo.UserRepo;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import org.springframework.security.core.context.SecurityContextHolder;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
@@ -202,17 +206,33 @@ public class OrderService {
 
     private final ProductRepo productRepo;
     private final OrderRepo orderRepo;
+    private final UserRepo userRepo;
 
     @Autowired
-    public OrderService(ProductRepo productRepo, OrderRepo orderRepo) {
+    public OrderService(ProductRepo productRepo, OrderRepo orderRepo, UserRepo userRepo) {
         this.productRepo = productRepo;
         this.orderRepo = orderRepo;
+        this.userRepo = userRepo;
     }
 
     @Transactional
     public OrderResponse placeOrder(OrderRequest request) {
 
         Order order = new Order();
+
+//latset changes for authentication nd authorization
+        String username = SecurityContextHolder.getContext()
+                .getAuthentication()
+                .getName();
+
+        User user = userRepo.findByUsername(username)
+                .orElseThrow(() -> new RuntimeException("User not found"));
+
+        order.setUser(user);
+
+//----------------------------------------------------------------------------------------
+
+
         String orderId = "ORD" + UUID.randomUUID().toString()
                 .substring(0, 8)
                 .toUpperCase();
