@@ -159,6 +159,6 @@ http://localhost:3000
 
 Vaishnavi
 
-Aspiring Java Full Stack Developer & Data Analyst
+Aspiring Java Full Stack Developer 
 
 ---
